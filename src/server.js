@@ -12,9 +12,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//app.get('/', (req, res) => {
-//    res.redirect(appURL);
-//  });
+app.get('/', (req, res) => {
+  res.redirect(process.env.URL_APP);
+});
 
 shipping.routers(app);
 
