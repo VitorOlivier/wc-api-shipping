@@ -49,6 +49,7 @@ function validation(params) {
   return {
     carrier,
     zip_code,
+    zone_location,
     weight,
     invoice_amount,
     freight_weight,
