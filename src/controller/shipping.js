@@ -22,25 +22,25 @@ function validation(params) {
   const advalorem = params.advalorem;
   const roadToll = params.roadToll;
 
-  if (weight == null) {
+  if (!weight || 0 === weight.length) {
     throw 'weight parameter is required';
   }
   if (!weight.isNumber()) {
     throw 'weight parameter is only numbers';
   }
-  if (carrier == null) {
+  if (!carrier || 0 === carrier.length) {
     throw 'carrier parameter is required';
   }
-  if (invoiceAmount == null) {
+  if (!invoiceAmount || 0 === invoiceAmount.length) {
     throw 'invoiceAmount parameter is required';
   }
   if (!invoiceAmount.isNumber()) {
     throw 'invoiceAmount parameter is only numbers';
   }
-  if (zipCode == null && zoneLocation == null) {
+  if ((!zipCode || 0 === zipCode.length) && (!zoneLocation || 0 === zoneLocation.length)) {
     throw 'zipCode or zoneLocation parameters is required';
   }
-  if (!zipCode.isNumber() && zipCode !== null) {
+  if (!zipCode.isNumber() && !(!zipCode || 0 === zipCode.length)) {
     throw 'zipCode parameter is only numbers';
   }
   if (zipCode.length > 8) {
