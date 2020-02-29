@@ -13,14 +13,14 @@ Number.prototype.myRound = function(qtd) {
 function validation(params) {
   const weight = params.weight;
   const carrier = params.carrier;
-  const invoice_amount = params.invoice_amount;
-  const zip_code = params.zip_code;
-  const zone_location = params.zone_location;
-  const freight_weight = params.freight_weight;
-  const minimum_freight_weight = params.minimum_freight_weight;
+  const invoiceAmount = params.invoiceAmount;
+  const zipCode = params.zipCode;
+  const zoneLocation = params.zoneLocation;
+  const freightWeight = params.freightWeight;
+  const minimumFreightWeight = params.minimumFreightWeight;
   const gris = params.gris;
   const advalorem = params.advalorem;
-  const road_toll = params.road_toll;
+  const roadToll = params.roadToll;
 
   if (weight == null) {
     throw 'weight parameter is required';
@@ -31,46 +31,46 @@ function validation(params) {
   if (carrier == null) {
     throw 'carrier parameter is required';
   }
-  if (invoice_amount == null) {
-    throw 'invoice_amount parameter is required';
+  if (invoiceAmount == null) {
+    throw 'invoiceAmount parameter is required';
   }
-  if (!invoice_amount.isNumber()) {
-    throw 'invoice_amount parameter is only numbers';
+  if (!invoiceAmount.isNumber()) {
+    throw 'invoiceAmount parameter is only numbers';
   }
-  if (zip_code == null && zone_location == null) {
-    throw 'zip_code or zone_location parameters is required';
+  if (zipCode == null && zoneLocation == null) {
+    throw 'zipCode or zoneLocation parameters is required';
   }
-  if (!zip_code.isNumber()) {
-    throw 'zip_code parameter is only numbers';
+  if (!zipCode.isNumber() && zipCode != null) {
+    throw 'zipCode parameter is only numbers';
   }
-  if (zip_code.length > 8) {
-    throw 'zip_code parameter have max length = 8';
+  if (zipCode.length > 8) {
+    throw 'zipCode parameter have max length = 8';
   }
   return {
     carrier,
-    zip_code,
-    zone_location,
+    zipCode,
+    zoneLocation,
     weight,
-    invoice_amount,
-    freight_weight,
-    minimum_freight_weight,
+    invoiceAmount,
+    freightWeight,
+    minimumFreightWeight,
     gris,
     advalorem,
-    road_toll,
+    roadToll,
   };
 }
 
 function calc(params) {
-  const freightWeight = parseFloat(params.freight_weight || process.env.FREIGHT_WEIGHT);
+  const freightWeight = parseFloat(params.freightWeight || process.env.FREIGHT_WEIGHT);
   const weight = parseFloat(params.weight);
   const gris = parseFloat(params.gris || process.env.GRIS);
-  const invoiceAmount = parseFloat(params.invoice_amount);
+  const invoiceAmount = parseFloat(params.invoiceAmount);
   const advalorem = parseFloat(params.advalorem || process.env.ADVALOREM);
   const minimumFreightWeightAmount = parseFloat(
-    params.minimum_freight_weight_amount || process.env.MINIMUM_FREIGHT_WEIGHT_AMOUNT,
+    params.minimumFreightWeightAmount || process.env.MINIMUM_FREIGHT_WEIGHT_AMOUNT,
   );
-  const serviceAmount = parseFloat(params.service_amount || process.env.SERVICE_AMOUNT);
-  const roadToll = parseFloat(params.road_toll || process.env.ROAD_TOLL);
+  const serviceAmount = parseFloat(params.serviceAmount || process.env.SERVICE_AMOUNT);
+  const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
   const freightWeightAmount = (freightWeight * weight).myRound(2);
   const grisAmount = (gris * invoiceAmount).myRound(2);
   const advaloremAmount = (advalorem * invoiceAmount).myRound(2);
