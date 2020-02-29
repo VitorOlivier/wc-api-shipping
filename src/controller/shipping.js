@@ -15,6 +15,7 @@ function validation(params) {
   const carrier = params.carrier;
   const invoice_amount = params.invoice_amount;
   const zip_code = params.zip_code;
+  const zone_location = params.zone_location;
   const freight_weight = params.freight_weight;
   const minimum_freight_weight = params.minimum_freight_weight;
   const gris = params.gris;
@@ -36,8 +37,8 @@ function validation(params) {
   if (!invoice_amount.isNumber()) {
     throw 'invoice_amount parameter is only numbers';
   }
-  if (zip_code == null) {
-    throw 'zip_code parameter is required';
+  if (zip_code == null && zone_location == null) {
+    throw 'zip_code or zone_location parameters is required';
   }
   if (!zip_code.isNumber()) {
     throw 'zip_code parameter is only numbers';
