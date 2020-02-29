@@ -40,7 +40,7 @@ function validation(params) {
   if (zipCode == null && zoneLocation == null) {
     throw 'zipCode or zoneLocation parameters is required';
   }
-  if (!zipCode.isNumber() && zipCode != null) {
+  if (!zipCode.isNumber() && zipCode !== null) {
     throw 'zipCode parameter is only numbers';
   }
   if (zipCode.length > 8) {
