@@ -14,8 +14,10 @@ function validation(params) {
   const weight = params.weight;
   const carrier = params.carrier;
   const invoiceAmount = params.invoiceAmount;
-  const zipCode = params.zipCode;
-  const zoneLocation = params.zoneLocation;
+  const country = params.country;
+  const state = params.state;
+  const city = params.city;
+  const postalCode = params.postalCode;
   const freightWeight = params.freightWeight;
   const minimumFreightWeight = params.minimumFreightWeight;
   const gris = params.gris;
@@ -37,19 +39,21 @@ function validation(params) {
   if (!invoiceAmount.isNumber()) {
     throw 'invoiceAmount parameter is only numbers';
   }
-  if ((!zipCode || 0 === zipCode.length) && (!zoneLocation || 0 === zoneLocation.length)) {
-    throw 'zipCode or zoneLocation parameters is required';
+  if ((!postalCode || 0 === postalCode.length) && (!state || 0 === state.length)) {
+    throw 'postalCode or state parameters is required';
   }
-  if (!zipCode.isNumber() && !(!zipCode || 0 === zipCode.length)) {
-    throw 'zipCode parameter is only numbers';
+  if (!postalCode.isNumber() && !(!postalCode || 0 === postalCode.length)) {
+    throw 'postalCode parameter is only numbers';
   }
-  if (zipCode.length > 8) {
-    throw 'zipCode parameter have max length = 8';
+  if (postalCode.length > 8) {
+    throw 'postalCode parameter have max length = 8';
   }
   return {
     carrier,
-    zipCode,
-    zoneLocation,
+    country,
+    state,
+    city,
+    postalCode,
     weight,
     invoiceAmount,
     freightWeight,
