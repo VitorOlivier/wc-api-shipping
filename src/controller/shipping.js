@@ -19,10 +19,12 @@ function validation(params) {
   const city = params.city;
   const postalCode = params.postalCode;
   const freightWeight = params.freightWeight;
-  const minimumFreightWeight = params.minimumFreightWeight;
+  const minFreightWeight = params.minFreightWeight;
   const gris = params.gris;
   const advalorem = params.advalorem;
   const roadToll = params.roadToll;
+  const shippingFee = params.shippingFee;
+  const icms = params.icms;
 
   if (!weight || 0 === weight.length) {
     throw 'weight parameter is required';
@@ -57,10 +59,12 @@ function validation(params) {
     weight,
     invoiceAmount,
     freightWeight,
-    minimumFreightWeight,
+    minFreightWeight,
     gris,
     advalorem,
     roadToll,
+    shippingFee,
+    icms,
   };
 }
 
@@ -70,20 +74,22 @@ function calc(params) {
   const gris = parseFloat(params.gris || process.env.GRIS);
   const invoiceAmount = parseFloat(params.invoiceAmount);
   const advalorem = parseFloat(params.advalorem || process.env.ADVALOREM);
-  const minimumFreightWeightAmount = parseFloat(
-    params.minimumFreightWeightAmount || process.env.MINIMUM_FREIGHT_WEIGHT_AMOUNT,
-  );
-  const serviceAmount = parseFloat(params.serviceAmount || process.env.SERVICE_AMOUNT);
+  const minFreightWeightAmount = parseFloat(params.minFreightWeightAmount || process.env.MIN_FREIGHT_WEIGHT_AMOUNT);
+  const shippingFee = parseFloat(params.shippingFee || process.env.SHIPPING_FEE);
   const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
+  const roadTollAmount = (roadToll * Math.ceil(weight / 100)).myRound(2);
+  const icms = parseFloat(params.icms || process.env.ICMS);
+  const icmsAmount = (invoiceAmount * 0.8 * icms).myRound(2);
   const freightWeightAmount = (freightWeight * weight).myRound(2);
   const grisAmount = (gris * invoiceAmount).myRound(2);
   const advaloremAmount = (advalorem * invoiceAmount).myRound(2);
   let freightTotalAmount =
-    (freightWeightAmount > minimumFreightWeightAmount ? freightWeightAmount : minimumFreightWeightAmount) +
+    (freightWeightAmount > minFreightWeightAmount ? freightWeightAmount : minFreightWeightAmount) +
     grisAmount +
     advaloremAmount +
-    roadToll +
-    serviceAmount;
+    roadTollAmount +
+    shippingFee +
+    icmsAmount;
 
   freightTotalAmount = freightTotalAmount.myRound(2);
 
@@ -92,15 +98,18 @@ function calc(params) {
   }
 
   return {
+    shippingFee,
     advalorem,
     advaloremAmount,
     gris,
     grisAmount,
     freightWeight,
     freightWeightAmount,
-    minimumFreightWeightAmount,
+    minFreightWeightAmount,
     roadToll,
-    serviceAmount,
+    roadTollAmount,
+    icms,
+    icmsAmount,
     freightTotalAmount,
   };
 }
