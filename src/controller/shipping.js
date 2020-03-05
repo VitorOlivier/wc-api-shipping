@@ -19,7 +19,7 @@ function validation(params) {
   const city = params.city;
   const postalCode = params.postalCode;
   const freightWeight = params.freightWeight;
-  const minFreightWeight = params.minFreightWeight;
+  const minFreightWeightAmount = params.minFreightWeightAmount;
   const gris = params.gris;
   const advalorem = params.advalorem;
   const roadToll = params.roadToll;
@@ -59,7 +59,7 @@ function validation(params) {
     weight,
     invoiceAmount,
     freightWeight,
-    minFreightWeight,
+    minFreightWeightAmount,
     gris,
     advalorem,
     roadToll,
@@ -79,7 +79,6 @@ function calc(params) {
   const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
   const roadTollAmount = (roadToll * Math.ceil(weight / 100)).myRound(2);
   const icms = parseFloat(params.icms || process.env.ICMS);
-  const icmsAmount = (invoiceAmount * 0.8 * icms).myRound(2);
   const freightWeightAmount = (freightWeight * weight).myRound(2);
   const grisAmount = (gris * invoiceAmount).myRound(2);
   const advaloremAmount = (advalorem * invoiceAmount).myRound(2);
@@ -88,14 +87,10 @@ function calc(params) {
     grisAmount +
     advaloremAmount +
     roadTollAmount +
-    shippingFee +
-    icmsAmount;
+    shippingFee;
 
-  freightTotalAmount = freightTotalAmount.myRound(2);
-
-  if (!freightTotalAmount) {
-    throw 'impossible to calculate';
-  }
+  const icmsAmount = (freightTotalAmount * 0.8 * icms).myRound(2);
+  freightTotalAmount = (freightTotalAmount + icmsAmount).myRound(2);
 
   return {
     shippingFee,
@@ -119,6 +114,9 @@ router.get('/calculate', async (req, res) => {
     const parameters = validation(req.query);
     const calculation = calc(parameters);
     logger.verbose(JSON.stringify({ parameters, calculation }));
+    if (!calculation.freightTotalAmount) {
+      throw 'impossible to calculate';
+    }
     return res.send({ parameters, calculation });
   } catch (erro) {
     logger.error(JSON.stringify(erro));
