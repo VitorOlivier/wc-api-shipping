@@ -89,7 +89,7 @@ function calc(params) {
     roadTollAmount +
     shippingFee;
 
-  const icmsAmount = (freightTotalAmount * 0.8 * icms).myRound(2);
+  const icmsAmount = ((freightTotalAmount / (1 - icms)) * icms).myRound(2);
   freightTotalAmount = (freightTotalAmount + icmsAmount).myRound(2);
 
   return {
