@@ -80,8 +80,8 @@ function calc(params) {
   const roadTollAmount = (roadToll * Math.ceil(weight / 100)).myRound(2);
   const icms = parseFloat(params.icms || process.env.ICMS);
   const freightWeightAmount = (freightWeight * weight).myRound(2);
-  const grisAmount = (gris * invoiceAmount).myRound(2);
-  const advaloremAmount = (advalorem * invoiceAmount).myRound(2);
+  const grisAmount = ((gris/100) * invoiceAmount).myRound(2);
+  const advaloremAmount = ((advalorem/100) * invoiceAmount).myRound(2);
   let freightTotalAmount =
     (freightWeightAmount > minFreightWeightAmount ? freightWeightAmount : minFreightWeightAmount) +
     grisAmount +
