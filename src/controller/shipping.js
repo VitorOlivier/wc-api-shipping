@@ -87,12 +87,13 @@ function calc(params) {
   const freightWeightAmount = (params.freightWeight * finalWeight).myRound(2);
   const grisAmount = ((params.gris / 100) * params.invoiceAmount).myRound(2);
   const advaloremAmount = ((params.advalorem / 100) * params.invoiceAmount).myRound(2);
-  const freightAmount =
+  const freightAmount = (
     (freightWeightAmount > params.minFreightWeightAmount ? freightWeightAmount : params.minFreightWeightAmount) +
     grisAmount +
     advaloremAmount +
     roadTollAmount +
-    params.shippingFee;
+    params.shippingFee
+  ).myRound(2);
 
   const icmsAmount = ((freightAmount / (1 - params.icms / 100)) * (params.icms / 100)).myRound(2);
   const freightTotalAmount = (freightAmount + icmsAmount).myRound(2);
