@@ -11,20 +11,24 @@ Number.prototype.myRound = function(qtd) {
 };
 
 function validation(params) {
-  const weight = params.weight;
   const carrier = params.carrier;
-  const invoiceAmount = params.invoiceAmount;
   const country = params.country;
   const state = params.state;
   const city = params.city;
   const postalCode = params.postalCode;
-  const freightWeight = params.freightWeight;
-  const minFreightWeightAmount = params.minFreightWeightAmount;
-  const gris = params.gris;
-  const advalorem = params.advalorem;
-  const roadToll = params.roadToll;
-  const shippingFee = params.shippingFee;
-  const icms = params.icms;
+  const weight = parseFloat(params.weight);
+  const length = parseFloat(params.length);
+  const width = parseFloat(params.width);
+  const height = parseFloat(params.height);
+  const invoiceAmount = parseFloat(params.invoiceAmount);
+  const freightWeight = parseFloat(params.freightWeight || process.env.FREIGHT_WEIGHT);
+  const minFreightWeightAmount = parseFloat(params.minFreightWeightAmount || process.env.MIN_FREIGHT_WEIGHT_AMOUNT);
+  const gris = parseFloat(params.gris || process.env.GRIS);
+  const advalorem = parseFloat(params.advalorem || process.env.ADVALOREM);
+  const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
+  const shippingFee = parseFloat(params.shippingFee || process.env.SHIPPING_FEE);
+  const cubage = parseFloat(params.cubage || process.env.CUBAGE);
+  const icms = parseFloat(params.icms || process.env.ICMS);
 
   if (!weight || 0 === weight.length) {
     throw 'weight parameter is required';
@@ -57,6 +61,9 @@ function validation(params) {
     city,
     postalCode,
     weight,
+    length,
+    width,
+    height,
     invoiceAmount,
     freightWeight,
     minFreightWeightAmount,
@@ -64,46 +71,36 @@ function validation(params) {
     advalorem,
     roadToll,
     shippingFee,
+    cubage,
     icms,
   };
 }
 
 function calc(params) {
-  const freightWeight = parseFloat(params.freightWeight || process.env.FREIGHT_WEIGHT);
-  const weight = parseFloat(params.weight);
-  const gris = parseFloat(params.gris || process.env.GRIS);
-  const invoiceAmount = parseFloat(params.invoiceAmount);
-  const advalorem = parseFloat(params.advalorem || process.env.ADVALOREM);
-  const minFreightWeightAmount = parseFloat(params.minFreightWeightAmount || process.env.MIN_FREIGHT_WEIGHT_AMOUNT);
-  const shippingFee = parseFloat(params.shippingFee || process.env.SHIPPING_FEE);
-  const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
-  const roadTollAmount = (roadToll * Math.ceil(weight / 100)).myRound(2);
-  const icms = parseFloat(params.icms || process.env.ICMS);
-  const freightWeightAmount = (freightWeight * weight).myRound(2);
-  const grisAmount = ((gris/100) * invoiceAmount).myRound(2);
-  const advaloremAmount = ((advalorem/100) * invoiceAmount).myRound(2);
-  let freightTotalAmount =
-    (freightWeightAmount > minFreightWeightAmount ? freightWeightAmount : minFreightWeightAmount) +
+  const roadTollAmount = (params.roadToll * Math.ceil(params.weight / 100)).myRound(2);
+  const cubedWeight = params.length * params.width * params.height * params.cubage;
+  const finalWeight = params.weight > cubedWeight ? params.weight : cubedWeight;
+  const freightWeightAmount = (params.freightWeight * finalWeight).myRound(2);
+  const grisAmount = ((params.gris / 100) * params.invoiceAmount).myRound(2);
+  const advaloremAmount = ((params.advalorem / 100) * params.invoiceAmount).myRound(2);
+  const freightAmount =
+    (freightWeightAmount > params.minFreightWeightAmount ? freightWeightAmount : params.minFreightWeightAmount) +
     grisAmount +
     advaloremAmount +
     roadTollAmount +
-    shippingFee;
+    params.shippingFee;
 
-  const icmsAmount = ((freightTotalAmount / (1 - icms)) * icms).myRound(2);
-  freightTotalAmount = (freightTotalAmount + icmsAmount).myRound(2);
+  const icmsAmount = ((freightAmount / (1 - params.icms / 100)) * (params.icms / 100)).myRound(2);
+  const freightTotalAmount = (freightAmount + icmsAmount).myRound(2);
 
   return {
-    shippingFee,
-    advalorem,
+    cubedWeight,
+    finalWeight,
     advaloremAmount,
-    gris,
     grisAmount,
-    freightWeight,
-    freightWeightAmount,
-    minFreightWeightAmount,
-    roadToll,
     roadTollAmount,
-    icms,
+    freightWeightAmount,
+    freightAmount,
     icmsAmount,
     freightTotalAmount,
   };
