@@ -11,6 +11,34 @@ Number.prototype.myRound = function(qtd) {
 };
 
 function validation(params) {
+  console.log('validation ini');
+
+  console.log('validation fim');
+  if (!params.weight || 0 === params.weight.length) {
+    throw 'weight parameter is required';
+  }
+  if (!params.weight.isNumber()) {
+    throw 'weight parameter is only numbers';
+  }
+  if (!params.carrier || 0 === params.carrier.length) {
+    throw 'carrier parameter is required';
+  }
+  if (!params.invoiceAmount || 0 === params.invoiceAmount.length) {
+    throw 'invoiceAmount parameter is required';
+  }
+  if (!params.invoiceAmount.isNumber()) {
+    throw 'invoiceAmount parameter is only numbers';
+  }
+  if ((!params.postalCode || 0 === params.postalCode.length) && (!params.state || 0 === params.state.length)) {
+    throw 'postalCode or state parameters is required';
+  }
+  if (!params.postalCode.isNumber() && !(!params.postalCode || 0 === params.postalCode.length)) {
+    throw 'postalCode parameter is only numbers';
+  }
+  if (params.postalCode.length > 8) {
+    throw 'postalCode parameter have max length = 8';
+  }
+
   const carrier = params.carrier;
   const country = params.country;
   const state = params.state;
@@ -30,30 +58,6 @@ function validation(params) {
   const cubage = parseFloat(params.cubage || process.env.CUBAGE);
   const icms = parseFloat(params.icms || process.env.ICMS);
 
-  if (!weight || 0 === weight.length) {
-    throw 'weight parameter is required';
-  }
-  if (!weight.isNumber()) {
-    throw 'weight parameter is only numbers';
-  }
-  if (!carrier || 0 === carrier.length) {
-    throw 'carrier parameter is required';
-  }
-  if (!invoiceAmount || 0 === invoiceAmount.length) {
-    throw 'invoiceAmount parameter is required';
-  }
-  if (!invoiceAmount.isNumber()) {
-    throw 'invoiceAmount parameter is only numbers';
-  }
-  if ((!postalCode || 0 === postalCode.length) && (!state || 0 === state.length)) {
-    throw 'postalCode or state parameters is required';
-  }
-  if (!postalCode.isNumber() && !(!postalCode || 0 === postalCode.length)) {
-    throw 'postalCode parameter is only numbers';
-  }
-  if (postalCode.length > 8) {
-    throw 'postalCode parameter have max length = 8';
-  }
   return {
     carrier,
     country,
@@ -109,8 +113,9 @@ function calc(params) {
 router.get('/calculate', async (req, res) => {
   try {
     const parameters = validation(req.query);
+    logger.verbose(JSON.stringify({ parameters }));
     const calculation = calc(parameters);
-    logger.verbose(JSON.stringify({ parameters, calculation }));
+    logger.verbose(JSON.stringify({ calculation }));
     if (!calculation.freightTotalAmount) {
       throw 'impossible to calculate';
     }
