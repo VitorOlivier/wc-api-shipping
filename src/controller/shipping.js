@@ -84,11 +84,12 @@ function calc(params) {
   const cubedWeight = ((params.length / 100) * (params.width / 100) * (params.height / 100) * params.cubage).myRound(2);
   const finalWeight = params.weight > cubedWeight ? params.weight : cubedWeight;
   const roadTollAmount = (params.roadToll * Math.ceil(finalWeight / 100)).myRound(2);
-  const freightWeightAmount = (params.freightWeight * finalWeight).myRound(2);
   const grisAmount = ((params.gris / 100) * params.invoiceAmount).myRound(2);
   const advaloremAmount = ((params.advalorem / 100) * params.invoiceAmount).myRound(2);
   const freightAmount = (
-    (freightWeightAmount > params.minFreightWeightAmount ? freightWeightAmount : params.minFreightWeightAmount) +
+    (finalWeight >= 100
+      ? params.minFreightWeightAmount + (params.freightWeight * (finalWeight - 100)).myRound(2)
+      : params.minFreightWeightAmount) +
     grisAmount +
     advaloremAmount +
     roadTollAmount +
@@ -104,7 +105,6 @@ function calc(params) {
     advaloremAmount,
     grisAmount,
     roadTollAmount,
-    freightWeightAmount,
     freightAmount,
     icmsAmount,
     freightTotalAmount,
