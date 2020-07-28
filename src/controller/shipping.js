@@ -38,8 +38,11 @@ function validation(params) {
   if (params.postalCode.length > 8) {
     throw 'postalCode parameter have max length = 8';
   }
-  if (!params.cubedWeight.isNumber()) {
+  if (!params.cubedWeight || 0 === params.cubedWeight.length) {
     throw 'cubedWeight parameter is required';
+  }
+  if (!params.cubedWeight.isNumber()) {
+    throw 'cubedWeight parameter is only numbers';
   }
 
   const carrier = params.carrier;
