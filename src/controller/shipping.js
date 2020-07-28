@@ -38,6 +38,9 @@ function validation(params) {
   if (params.postalCode.length > 8) {
     throw 'postalCode parameter have max length = 8';
   }
+  if (!params.cubedWeight.isNumber()) {
+    throw 'cubedWeight parameter is required';
+  }
 
   const carrier = params.carrier;
   const country = params.country;
@@ -56,7 +59,9 @@ function validation(params) {
   const roadToll = parseFloat(params.roadToll || process.env.ROAD_TOLL);
   const shippingFee = parseFloat(params.shippingFee || process.env.SHIPPING_FEE);
   const cubage = parseFloat(params.cubage || process.env.CUBAGE);
+  const cubedWeight = parseFloat(params.cubedWeight);
   const icms = parseFloat(params.icms || process.env.ICMS);
+  
 
   return {
     carrier,
@@ -76,6 +81,7 @@ function validation(params) {
     roadToll,
     shippingFee,
     cubage,
+    cubedWeight,
     icms,
   };
 }
