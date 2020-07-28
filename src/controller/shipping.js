@@ -81,7 +81,8 @@ function validation(params) {
 }
 
 function calc(params) {
-  const cubedWeight = ((params.length / 100) * (params.width / 100) * (params.height / 100) * params.cubage).myRound(2);
+  //const cubedWeight = ((params.length / 100) * (params.width / 100) * (params.height / 100) * params.cubage).myRound(2);
+  const cubedWeight = (params.cubedWeight).myRound(2);
   const finalWeight = params.weight > cubedWeight ? params.weight : cubedWeight;
   const roadTollAmount = (params.roadToll * Math.ceil(finalWeight / 100)).myRound(2);
   const grisAmount = ((params.gris / 100) * params.invoiceAmount).myRound(2);
