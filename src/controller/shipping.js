@@ -10,6 +10,10 @@ Number.prototype.myRound = function(qtd) {
   return parseFloat(this.toFixed(qtd));
 };
 
+Number.prototype.myTrunc = function(qtd) {
+  return Math.floor(this * Math.pow(10, qtd))/Math.pow(10, qtd);
+};
+
 function validation(params) {
   console.log('validation ini');
 
@@ -106,7 +110,7 @@ function calc(params) {
     params.shippingFee
   ).myRound(2);
 
-  const icmsAmount = ((freightAmount / (1 - params.icms / 100)) * (params.icms / 100)).myRound(2);
+  const icmsAmount = ((freightAmount * (1 - (params.icms / 100))) * (params.icms / 100)).myRound(2);
   const freightTotalAmount = (freightAmount + icmsAmount).myRound(2);
 
   return {
